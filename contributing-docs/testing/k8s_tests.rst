@@ -306,6 +306,8 @@ Should result in KinD creating the K8S cluster.
 
     breeze k8s build-k8s-image
 
+Build the image base on PROD Airflow image. You need to build the PROD image first (the command will guide you if you did not) either by running the build separately or passing --rebuild-base-image flag. Generally speaking you should not need to rebuild the base image unless you changed some dependencies in pyproject.toml
+
 4. Check the status of the cluster
 
 .. code-block:: bash
@@ -666,4 +668,21 @@ command. It is the way it is run in our CI, you can also run such complete tests
 
 -----
 
+
+Troubleshooting
+--------------------------
+In case you encounter the following error while running: `breeze k8s build-k8s-image -v`
+```bash 
+ERROR: failed to solve: ghcr.io/apache/airflow/main/prod/python3.10:latest: failed to resolve source metadata for ghcr.io/apache/airflow/main/prod/python3.10:latest: no match for platform in manifest: not found
+Error when building the kubernetes image.
+```
+
+you might have your default python interpreter that is based on x86 while you are using an ARM machine.
+
+In order to debug it: 
+```bash
+python -c "import platform; print(platform.uname().machine.lower())"
+```
+For more info and issue debugging options please follow the [Slack thread](https://apache-airflow.slack.com/archives/CQ9QHSFQX/p1721117782663589)
+-----
 For other kinds of tests look at `Testing document <../09_testing.rst>`__
