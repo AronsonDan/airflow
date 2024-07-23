@@ -692,11 +692,15 @@ Diagnosis
 ~~~~~~~~~
 1. Check your Python architecture:
 
+   .. code-block:: text
+
       python -c "import platform; print(platform.uname().machine.lower())"
 
    It should return ``arm64`` on ARM machines.
 
 2. Check your system architecture:
+
+   .. code-block:: text
 
       uname -m
 
