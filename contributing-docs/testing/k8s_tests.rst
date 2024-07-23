@@ -676,7 +676,7 @@ Troubleshooting
 ## Issue
 When trying to build Kubernetes images for Airflow on an ARM-based machine (e.g., Apple M1), you may encounter an error like:
 
-```
+```bash
 ERROR: failed to solve: ghcr.io/apache/airflow/main/prod/python3.11:latest: failed to resolve source metadata for ghcr.io/apache/airflow/main/prod/python3.11:latest: no match for platform in manifest: not found
 ```
 
@@ -687,15 +687,15 @@ ERROR: failed to solve: ghcr.io/apache/airflow/main/prod/python3.11:latest: fail
 
 ## Diagnosis
 1. Check your Python architecture:
-   ```
+```python
    python -c "import platform; print(platform.uname().machine.lower())"
-   ```
+```
    It should return `arm64` on ARM machines.
 
 2. Check your system architecture:
-   ```
+```bash
    uname -m
-   ```
+```
    It should return `arm64` on ARM machines.
 
 ## Resolution
