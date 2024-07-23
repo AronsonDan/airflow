@@ -667,52 +667,62 @@ This will create cluster, build images, deploy airflow run tests and finally del
 command. It is the way it is run in our CI, you can also run such complete tests in parallel.
 
 -----
-
+=====================================================
+Building Airflow K8s Images on ARM Machines
+=====================================================
 
 Troubleshooting
---------------------------
-# Troubleshooting: Building Airflow K8s Images on ARM Machines
+---------------
 
-## Issue
+Issue
+~~~~~
 When trying to build Kubernetes images for Airflow on an ARM-based machine (e.g., Apple M1), you may encounter an error like:
 
-```bash
-ERROR: failed to solve: ghcr.io/apache/airflow/main/prod/python3.11:latest: failed to resolve source metadata for ghcr.io/apache/airflow/main/prod/python3.11:latest: no match for platform in manifest: not found
-```
+.. code-block:: text
 
-## Possible Causes
+    ERROR: failed to solve: ghcr.io/apache/airflow/main/prod/python3.11:latest: failed to resolve source metadata for ghcr.io/apache/airflow/main/prod/python3.11:latest: no match for platform in manifest: not found
+
+Possible Causes
+~~~~~~~~~~~~~~~
 1. Docker trying to pull AMD64 images instead of ARM64.
 2. Python installation reporting incorrect architecture.
 3. Remnants from a previous Intel-based machine after migration to ARM.
 
-## Diagnosis
+Diagnosis
+~~~~~~~~~
 1. Check your Python architecture:
-```python
-   python -c "import platform; print(platform.uname().machine.lower())"
-```
-   It should return `arm64` on ARM machines.
+
+      python -c "import platform; print(platform.uname().machine.lower())"
+
+   It should return ``arm64`` on ARM machines.
 
 2. Check your system architecture:
-```bash
-   uname -m
-```
-   It should return `arm64` on ARM machines.
 
-## Resolution
-1. If Python reports `x86_64` on an ARM machine:
+      uname -m
+
+   It should return ``arm64`` on ARM machines.
+
+Resolution
+~~~~~~~~~~
+1. If Python reports ``x86_64`` on an ARM machine:
+
    - Reinstall Python using a version manager like pyenv or rye.
    - Ensure you're using an ARM-compatible Python version.
 
 2. If the issue persists:
-   - Run `breeze prod-image build` to build the base image locally.
-   - Then run `breeze k8s build-k8s-image --rebuild-base-image`.
+
+   - Run ``breeze prod-image build`` to build the base image locally.
+   - Then run ``breeze k8s build-k8s-image --rebuild-base-image``.
 
 3. If you recently migrated from an Intel-based Mac:
+
    - Check for any Intel binaries or configurations that might have been transferred.
    - Consider reinstalling developer tools and environments from scratch.
 
-## Prevention
+Prevention
+~~~~~~~~~~
 - When migrating to a new architecture, it's best to set up development environments from scratch rather than transferring them directly.
 - Regularly check that your development tools are using the correct architecture for your machine.
 
-Remember: Running emulated x86 Python on ARM can result in significant performance degradation (up to 16x slower).
+.. note::
+   Running emulated x86 Python on ARM can result in significant performance degradation (up to 16x slower).
